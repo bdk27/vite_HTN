@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { ref, reactive } from 'vue';
   import { nanoid } from 'nanoid'
+  import HTNTable from './HTNTable.vue';
 
   let year = ref(2023);
 
@@ -36,7 +37,7 @@
 
           <div :id="'collapseOne'+item.id" class="accordion-collapse collapse show" :aria-labelledby="'headingOne'+item.id" data-bs-parent="#accordion">
               <div class="accordion-body">
-              <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam, nobis labore et voluptas laudantium, reprehenderit totam voluptatum neque, aspernatur corrupti nulla consequuntur doloribus voluptates. Aliquam voluptate porro voluptates iste sint.</p>
+                <HTNTable></HTNTable>
               </div>
           </div>
         </div>

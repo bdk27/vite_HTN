@@ -19,7 +19,7 @@
     <div class="row">
       <div class="col-12">
         <div class="item">
-          <div class="bg rounded mb-4">
+          <div class="bg mb-4">
             <h1><i class="bi bi-droplet-fill"></i>血壓紀錄表</h1>
             <div class="info">
               <h5>姓名: 顏永程</h5>
@@ -42,6 +42,8 @@
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+    border-bottom-left-radius: .5rem;
+    border-bottom-right-radius: .5rem;
     display: flex;
     align-items: center;
     justify-content: center;
