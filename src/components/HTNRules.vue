@@ -2,13 +2,13 @@
 </script>
 
 <template>
-    <div class="row row-cols-md-2 row-cols-lg-4 mx-0">
+    <div class="row row-cols-md-2 row-cols-lg-4 mx-0 mb-3">
         <div class="col-6">
             <div class="content">
                 <div class="circle normal"></div>
                 <div class="text">
                     <h5>正常血壓</h5>
-                    <p>收縮壓 &lt; 120 且 舒張壓 &lt; 120</p>
+                    <p>收縮壓 &lt; 120 且 舒張壓 &lt; 80</p>
                 </div>
             </div>
         </div>
