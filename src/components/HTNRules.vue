@@ -52,9 +52,9 @@
   }
 
   .circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: 30px;
+    height: 60px;
+    border-radius: 5px;
     margin-right: .5rem;
   }
   .text {

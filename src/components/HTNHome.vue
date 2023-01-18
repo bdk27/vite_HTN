@@ -19,7 +19,7 @@
     <div class="row">
       <div class="col-12">
         <div class="item">
-          <div class="bg rounded mb-5">
+          <div class="bg rounded mb-4">
             <h1><i class="bi bi-droplet-fill"></i>血壓紀錄表</h1>
             <div class="info">
               <h5>姓名: 顏永程</h5>
@@ -48,12 +48,14 @@
     flex-direction: column;
     h1 {
       color: #fff;
+      letter-spacing: 1px;
     }
     .info {
       h5 {
         color: #fff;
         display: inline-block;
         padding: 0 .5rem;
+        color: #ccc;
       }
     }
   }
