@@ -1,67 +1,31 @@
 <script setup lang="ts">
-    import { reactive } from 'vue';
-    import { watch } from 'vue';
+    import {  watch, reactive } from 'vue';
+    import  getData  from '../assets/ts/data';
+    const props = defineProps({month: Number});
 
-    interface FormProps {
-        sys: number
-        dia: number
-        pulse: number
-        note: string
-        status: string
-        isEdit: boolean
-        editItnfo:() => void
-        updateInfo:() => void
-    }
-    class Form implements FormProps{
-        sys: number
-        dia: number
-        pulse: number
-        note: string
-        status: string
-        isEdit: boolean
+    const HTNData = reactive(getData());
 
-        constructor(sys: number,dia: number,pulse: number,note: string, status: string, isEdit: boolean) {
-            this.sys = sys
-            this.dia = dia
-            this.pulse = pulse
-            this.note = note
-            this.status = status
-            this.isEdit = isEdit
-        }
-
-        editItnfo() {
-            this.isEdit = true;
-        }
-        updateInfo() {
-            this.isEdit = false;
+    function checkStatus(period: any) {
+        if(period.sys < 120 && period.dia < 80) {
+            period.status = 'green';
+        }else if((period.sys >= 120 && period.sys <= 139) || (period.dia >= 80 && period.dia <= 89)) {
+            period.status = 'yellow';
+        }else if((period.sys >= 140 && period.sys <= 159) || (period.dia >= 90 && period.dia <= 99)) {
+            period.status = 'red';
+        }else if(period.sys >= 160 || period.dia >= 100) {
+            period.status = 'd-red';
         }
     }
-    const morning = reactive(new Form(0, 0, 0, '', '' , true));
-    const night = reactive(new Form(0, 0, 0, '', '', true));
 
-    watch(morning, () => {
-        if(morning.sys < 120 && morning.dia < 80) {
-            morning.status = 'green';
-        }else if((morning.sys >= 120 && morning.sys <= 139) || (morning.dia >= 80 && morning.dia <= 89)) {
-            morning.status = 'yellow';
-        }else if((morning.sys >= 140 && morning.sys <= 159) || (morning.dia >= 90 && morning.dia <= 99)) {
-            morning.status = 'red';
-        }else if(morning.sys >= 160 || morning.dia >= 100) {
-            morning.status = 'd-red';
-        }
+    HTNData.forEach(item => {
+        watch(item.morning, () => {
+            checkStatus(item.morning);
+        });
+        watch(item.night, () => {
+            checkStatus(item.night);
+        });
     })
-    watch(night, () => {
-        if(night.sys < 120 && night.dia < 80) {
-            night.status = 'green';
-        }else if((night.sys >= 120 && night.sys <= 139) || (night.dia >= 80 && night.dia <= 89)) {
-            night.status = 'yellow';
-        }else if((night.sys >= 140 && night.sys <= 159) || (night.dia >= 90 && night.dia <= 99)) {
-            night.status = 'red';
-        }else if(night.sys >= 160 || night.dia >= 100) {
-            night.status = 'd-red';
-        }
-    })
- 
+
 </script>
 
 <template>
@@ -78,39 +42,38 @@
                 <th scope="col">編輯</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody v-for="item in HTNData" :key="item.id" :class="item.day%2===0 ? 'evenBg' : 'none'">
             <tr>
-                <th scope="row" rowspan="2">1/1</th>
+                <th scope="row" rowspan="2">{{ props.month }}/{{ item.day }}</th>
                 <td>早上</td>
-                <td><div class="circle" :class="morning.status"></div></td>
-                <td v-show="morning.isEdit===false"><span >{{ morning.sys }}</span></td>
-                <td v-show="morning.isEdit===true"><input type="number" v-model="morning.sys"></td>
-                <td v-show="morning.isEdit===false"><span >{{ morning.dia }}</span></td>
-                <td v-show="morning.isEdit===true"><input type="number" v-model="morning.dia"></td>
-                <td v-show="morning.isEdit===false"><span >{{ morning.pulse }}</span></td>
-                <td v-show="morning.isEdit===true"><input type="number" 
-                v-model="morning.pulse"></td>
-                <td v-show="morning.isEdit===false"><span >{{ morning.note }}</span></td>
-                <td v-show="morning.isEdit===true"><input type="text" v-model="morning.note"></td>
-                <td v-show="morning.isEdit===true"><i class="bi bi-check-square" @click="morning.updateInfo"></i></td>
-                <td v-show="morning.isEdit===false"><i class="bi bi-pencil-square" @click="morning.editItnfo"></i></td>
+                <td><div class="circle" :class="item.morning.status"></div></td>
+                <td v-show="item.morning.isEdit===false"><span >{{ item.morning.sys }}</span></td>
+                <td v-show="item.morning.isEdit===true"><input type="number" v-model="item.morning.sys"></td>
+                <td v-show="item.morning.isEdit===false"><span >{{ item.morning.dia }}</span></td>
+                <td v-show="item.morning.isEdit===true"><input type="number" v-model="item.morning.dia"></td>
+                <td v-show="item.morning.isEdit===false"><span >{{ item.morning.pulse }}</span></td>
+                <td v-show="item.morning.isEdit===true"><input type="number" 
+                v-model="item.morning.pulse"></td>
+                <td v-show="item.morning.isEdit===false"><span >{{ item.morning.note }}</span></td>
+                <td v-show="item.morning.isEdit===true"><input type="text" v-model="item.morning.note"></td>
+                <td v-show="item.morning.isEdit===true"><i class="bi bi-check-square" @click="item.morning.updateInfo()"></i></td>
+                <td v-show="item.morning.isEdit===false"><i class="bi bi-pencil-square" @click="item.morning.editInfo()"></i></td>
             </tr>
             <tr>
                 <td>晚上</td>
-                <td><div class="circle" :class="night.status"></div></td>
-                <td v-show="night.isEdit===false"><span>{{ night.sys }}</span></td>
-                <td v-show="night.isEdit===true"><input type="number" v-model="night.sys"></td>
-                <td v-show="night.isEdit===false"><span>{{ night.dia }}</span></td>
-                <td v-show="night.isEdit===true"><input type="number" v-model="night.dia"></td>
-                <td v-show="night.isEdit===false"><span>{{ night.pulse }}</span></td>
-                <td v-show="night.isEdit===true"><input type="number" v-model="night.pulse"></td>
-                <td v-show="night.isEdit===false"><span>{{ night.note }}</span></td>
-                <td v-show="night.isEdit===true"><input type="text" v-model="night.note"></td>
-                <!-- <td>Concor 2.5mg</td> -->
-                <td v-show="night.isEdit===true"><i class="bi bi-check-square" @click="night.updateInfo"></i></td>
-                <td v-show="night.isEdit===false"><i class="bi bi-pencil-square" @click="night.editItnfo"></i></td>
+                <td><div class="circle" :class="item.night.status"></div></td>
+                <td v-show="item.night.isEdit===false"><span>{{ item.night.sys }}</span></td>
+                <td v-show="item.night.isEdit===true"><input type="number" v-model="item.night.sys"></td>
+                <td v-show="item.night.isEdit===false"><span>{{ item.night.dia }}</span></td>
+                <td v-show="item.night.isEdit===true"><input type="number" v-model="item.night.dia"></td>
+                <td v-show="item.night.isEdit===false"><span>{{ item.night.pulse }}</span></td>
+                <td v-show="item.night.isEdit===true"><input type="number" v-model="item.night.pulse"></td>
+                <td v-show="item.night.isEdit===false"><span>{{ item.night.note }}</span></td>
+                <td v-show="item.night.isEdit===true"><input type="text" v-model="item.night.note"></td>
+                <td v-show="item.night.isEdit===true"><i class="bi bi-check-square" @click="item.night.updateInfo()"></i></td>
+                <td v-show="item.night.isEdit===false"><i class="bi bi-pencil-square" @click="item.night.editInfo()"></i></td>
             </tr>
-        </tbody>
+        </tbody>    
     </table>
 </template>
 
@@ -119,7 +82,10 @@
    .table{
         tbody {
             vertical-align: middle;
-            th,td {
+            th {
+                width: 150px;
+            }
+            td {
                 width: 150px;
             }
             input {
@@ -150,6 +116,9 @@
     }
     .d-red {
         background: $d-red;
+    }
+    .evenBg {
+        background: #f0f0f0;
     }
 
   
