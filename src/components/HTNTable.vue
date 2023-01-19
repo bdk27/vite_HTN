@@ -3,7 +3,7 @@
     import  getData  from '../assets/ts/data';
     const props = defineProps({month: Number});
     //資料
-    const HTNData = reactive(getData());
+    const HTNData = reactive(JSON.parse(localStorage.getItem('HTNTable') as string) || getData());
 
     //檢測狀態
     function checkStatus(period: any) {
@@ -18,13 +18,17 @@
         }
     }
     //進行監視
-    HTNData.forEach(item => {
+    HTNData.forEach((item: { morning: object; night: object; }) => {
         watch(item.morning, () => {
             checkStatus(item.morning);
         });
         watch(item.night, () => {
             checkStatus(item.night);
         });
+    })
+
+    watch(HTNData, (value) => {
+        localStorage.setItem('HTNTable', JSON.stringify(value));
     })
 
 </script>
