@@ -36,8 +36,9 @@ export default function HTNData() {
             this.isEdit = false;
         }
     }
-
-    const test = Array.from({length: 31}, (_, i) => {
+    
+    //生成資料
+    const data = Array.from({length: 31}, (_, i) => {
         return {
             id: nanoid(),
             day: i + 1,
@@ -46,7 +47,7 @@ export default function HTNData() {
         }
     })
 
-    return test
+    return data
 }
     
 

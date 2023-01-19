@@ -2,9 +2,10 @@
     import {  watch, reactive } from 'vue';
     import  getData  from '../assets/ts/data';
     const props = defineProps({month: Number});
-
+    //資料
     const HTNData = reactive(getData());
 
+    //檢測狀態
     function checkStatus(period: any) {
         if(period.sys < 120 && period.dia < 80) {
             period.status = 'green';
@@ -16,7 +17,7 @@
             period.status = 'd-red';
         }
     }
-
+    //進行監視
     HTNData.forEach(item => {
         watch(item.morning, () => {
             checkStatus(item.morning);
