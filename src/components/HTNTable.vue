@@ -5,8 +5,9 @@
     const lsData = localStorage.getItem('HTNTable');
     const HTNData = reactive(lsData ? JSON.parse(lsData) : []);
     let day = ref(1);
-    
-    //資料
+    let date = ref('');
+
+    //class
     interface FormProps {
         sys: number
         dia: number
@@ -14,8 +15,6 @@
         note: string
         status: string
         isEdit: boolean
-        editInfo:() => void
-        updateInfo:() => void
     }
     class Form implements FormProps{
         sys: number
@@ -33,38 +32,48 @@
             this.status = status
             this.isEdit = isEdit
         }
-    
-        editInfo() {
-            this.isEdit = true;
-        }
-        updateInfo() {
-            this.isEdit = false;
-        }
     }  
 
     //生成資料
+    interface Data {
+        id: string
+        day: number
+        editDate: boolean
+        date: string
+        morning: Form
+        night: Form
+    }
     function addData() {
-        const data: object = {
+        const data: Data = {
             id: nanoid(),
             day: day.value,
             editDate: true,
+            date: date.value,
             morning: reactive(new Form(0, 0, 0, '', '', false)),
             night: reactive(new Form(0, 0, 0, '', '', false)),
         }
         day.value ++;
         HTNData.push(data);
-
-        //進行監視
-        HTNData.forEach((item: { morning: FormProps; night: FormProps; }) => {
-            watch(item.morning, () => {
-                checkStatus(item.morning);
-            });
-            watch(item.night, () => {
-                checkStatus(item.night);
-            });
-        })
     }
 
+    //編輯與更新
+    function editInfo(element: { isEdit: boolean; }) {
+        element.isEdit = true;
+    }
+    function updateInfo(element: { isEdit: boolean; }) {
+        element.isEdit = false;
+    }
+
+    //進行狀態監視
+    HTNData.forEach((item: Data) => {
+        watch(item.morning, (n: Form) => {
+            checkStatus(n);
+        });
+        watch(item.night, (n: Form) => {
+            checkStatus(n);
+        })
+    })
+    
     //檢測狀態
     function checkStatus(period: FormProps) {
         if(period.sys < 120 && period.dia < 80) {
@@ -85,7 +94,7 @@
 
     //頁面自動到最底部
     onMounted(() => {
-       window.scrollTo(0, document.body.scrollHeight); 
+        window.scrollTo(0, document.body.scrollHeight);
     })
    
 </script>
@@ -108,7 +117,6 @@
             <tr>
                 <th scope="row" rowspan="2" v-show="item.morning.isEdit===false && item.night.isEdit===false"><span>{{ item.date }}</span></th>
                 <th scope="row" rowspan="2" v-show="item.morning.isEdit===true || item.night.isEdit===true"><input type="date" v-model="item.date"></th>
-                
                 <td>早上</td>
                 <td><div class="circle" :class="item.morning.status"></div></td>
                 <td v-show="item.morning.isEdit===false"><span >{{ item.morning.sys }}</span></td>
@@ -120,8 +128,8 @@
                 v-model="item.morning.pulse"></td>
                 <td v-show="item.morning.isEdit===false"><span >{{ item.morning.note }}</span></td>
                 <td v-show="item.morning.isEdit===true"><input type="text" v-model="item.morning.note"></td>
-                <td v-show="item.morning.isEdit===true"><i class="bi bi-check-square" @click="item.morning.updateInfo()"></i></td>
-                <td v-show="item.morning.isEdit===false"><i class="bi bi-pencil-square" @click="item.morning.editInfo()"></i></td>
+                <td v-show="item.morning.isEdit===true"><i class="bi bi-check-square" @click="updateInfo(item.morning)"></i></td>
+                <td v-show="item.morning.isEdit===false"><i class="bi bi-pencil-square" @click="editInfo(item.morning)"></i></td>
             </tr>
             <tr>
                 <td>晚上</td>
@@ -134,8 +142,8 @@
                 <td v-show="item.night.isEdit===true"><input type="number" v-model="item.night.pulse"></td>
                 <td v-show="item.night.isEdit===false"><span>{{ item.night.note }}</span></td>
                 <td v-show="item.night.isEdit===true"><input type="text" v-model="item.night.note"></td>
-                <td v-show="item.night.isEdit===true"><i class="bi bi-check-square" @click="item.night.updateInfo()"></i></td>
-                <td v-show="item.night.isEdit===false"><i class="bi bi-pencil-square" @click="item.night.editInfo()"></i></td>
+                <td v-show="item.night.isEdit===true"><i class="bi bi-check-square" @click="updateInfo(item.night)"></i></td>
+                <td v-show="item.night.isEdit===false"><i class="bi bi-pencil-square" @click="editInfo(item.night)"></i></td>
             </tr>
         </tbody>    
     </table>
