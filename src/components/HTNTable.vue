@@ -1,10 +1,10 @@
 <script setup lang="ts">
-    import {  ref, watch, reactive, onMounted } from 'vue';
+    import {  ref, watch, reactive } from 'vue';
     import { nanoid } from "nanoid";
 
-    const HTNData: any = reactive([]);
+    const lsData = localStorage.getItem('HTNTable');
+    const HTNData = reactive(lsData ? JSON.parse(lsData) : []);
     let day = ref(1);
-    let date = ref('');
     
     //資料
     interface FormProps {
@@ -63,7 +63,7 @@
                 checkStatus(item.night);
             });
         })
-    }    
+    }
 
     //檢測狀態
     function checkStatus(period: FormProps) {
@@ -77,6 +77,11 @@
             period.status = 'd-red';
         }
     }
+
+    //監視HTNData
+    watch(HTNData, (value) => {
+        localStorage.setItem('HTNTable', JSON.stringify(value));
+    })
    
 </script>
 
