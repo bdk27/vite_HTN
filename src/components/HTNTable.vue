@@ -54,25 +54,25 @@
         }
         day.value ++;
         HTNData.push(data);
+
+        //進行狀態監視
+        HTNData.forEach((item: Data) => {
+            watch(item.morning, (n: Form) => {
+                checkStatus(n);
+            });
+            watch(item.night, (n: Form) => {
+                checkStatus(n);
+            })
+        })
     }
 
     //編輯與更新
-    function editInfo(element: { isEdit: boolean; }) {
+    function editInfo(element: Form) {
         element.isEdit = true;
     }
-    function updateInfo(element: { isEdit: boolean; }) {
+    function updateInfo(element: Form) {
         element.isEdit = false;
     }
-
-    //進行狀態監視
-    HTNData.forEach((item: Data) => {
-        watch(item.morning, (n: Form) => {
-            checkStatus(n);
-        });
-        watch(item.night, (n: Form) => {
-            checkStatus(n);
-        })
-    })
     
     //檢測狀態
     function checkStatus(period: FormProps) {
