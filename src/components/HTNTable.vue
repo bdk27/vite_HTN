@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import {  ref, watch, reactive } from 'vue';
+    import {  ref, watch, reactive, onMounted } from 'vue';
     import { nanoid } from "nanoid";
 
     const lsData = localStorage.getItem('HTNTable');
@@ -81,6 +81,11 @@
     //監視HTNData
     watch(HTNData, (value) => {
         localStorage.setItem('HTNTable', JSON.stringify(value));
+    })
+
+    //頁面自動到最底部
+    onMounted(() => {
+       window.scrollTo(0, document.body.scrollHeight); 
     })
    
 </script>
