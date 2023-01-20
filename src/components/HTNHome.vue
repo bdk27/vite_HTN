@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import HTNList from '../components/HTNList.vue'
   import HTNRules from '../components/HTNRules.vue'
+  import HTNTable from './HTNTable.vue';
   import { ref, onMounted } from 'vue';
 
   let yearsOld = ref(0);
@@ -27,7 +27,7 @@
             </div>
           </div>
           <HTNRules></HTNRules>
-          <HTNList></HTNList>
+          <HTNTable></HTNTable>
         </div>
       </div>
     </div>

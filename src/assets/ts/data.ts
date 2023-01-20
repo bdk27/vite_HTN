@@ -1,7 +1,7 @@
 import { reactive } from "vue";
 import { nanoid } from "nanoid";
 
-export default function HTNData() {
+export default function getData() {
     interface FormProps {
         sys: number
         dia: number
@@ -38,7 +38,7 @@ export default function HTNData() {
     }
     
     //生成資料
-    const data = Array.from({length: 31}, (_, i) => {
+    /* const data = Array.from({length: 31}, (_, i) => {
         return {
             id: nanoid(),
             day: i + 1,
@@ -46,9 +46,16 @@ export default function HTNData() {
             night: reactive(new Form(0, 0, 0, '', '', false)),
         }
     })
-
-    return data
+    return data */
+    const data = {
+        id: nanoid(),
+        morning: reactive(new Form(0, 0, 0, '', '', false)),
+        night: reactive(new Form(0, 0, 0, '', '', false)),
+    }
+    
+    
 }
+
     
 
 

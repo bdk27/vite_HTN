@@ -1,12 +1,72 @@
 <script setup lang="ts">
-    import {  watch, reactive } from 'vue';
-    import  getData  from '../assets/ts/data';
-    const props = defineProps({month: Number});
+    import {  ref, watch, reactive, onMounted } from 'vue';
+    import { nanoid } from "nanoid";
+
+    const HTNData: any = reactive([]);
+    let day = ref(1);
+    let date = ref('');
+    
     //資料
-    const HTNData = reactive(JSON.parse(localStorage.getItem('HTNTable') as string) || getData());
+    interface FormProps {
+        sys: number
+        dia: number
+        pulse: number
+        note: string
+        status: string
+        isEdit: boolean
+        editInfo:() => void
+        updateInfo:() => void
+    }
+    class Form implements FormProps{
+        sys: number
+        dia: number
+        pulse: number
+        note: string
+        status: string
+        isEdit: boolean
+    
+        constructor(sys: number,dia: number,pulse: number,note: string, status: string, isEdit: boolean) {
+            this.sys = sys
+            this.dia = dia
+            this.pulse = pulse
+            this.note = note
+            this.status = status
+            this.isEdit = isEdit
+        }
+    
+        editInfo() {
+            this.isEdit = true;
+        }
+        updateInfo() {
+            this.isEdit = false;
+        }
+    }  
+
+    //生成資料
+    function addData() {
+        const data: object = {
+            id: nanoid(),
+            day: day.value,
+            editDate: true,
+            morning: reactive(new Form(0, 0, 0, '', '', false)),
+            night: reactive(new Form(0, 0, 0, '', '', false)),
+        }
+        day.value ++;
+        HTNData.push(data);
+
+        //進行監視
+        HTNData.forEach((item: { morning: FormProps; night: FormProps; }) => {
+            watch(item.morning, () => {
+                checkStatus(item.morning);
+            });
+            watch(item.night, () => {
+                checkStatus(item.night);
+            });
+        })
+    }    
 
     //檢測狀態
-    function checkStatus(period: any) {
+    function checkStatus(period: FormProps) {
         if(period.sys < 120 && period.dia < 80) {
             period.status = 'green';
         }else if((period.sys >= 120 && period.sys <= 139) || (period.dia >= 80 && period.dia <= 89)) {
@@ -17,20 +77,7 @@
             period.status = 'd-red';
         }
     }
-    //進行監視
-    HTNData.forEach((item: { morning: object; night: object; }) => {
-        watch(item.morning, () => {
-            checkStatus(item.morning);
-        });
-        watch(item.night, () => {
-            checkStatus(item.night);
-        });
-    })
-
-    watch(HTNData, (value) => {
-        localStorage.setItem('HTNTable', JSON.stringify(value));
-    })
-
+   
 </script>
 
 <template>
@@ -49,7 +96,9 @@
         </thead>
         <tbody v-for="item in HTNData" :key="item.id" :class="item.day%2===0 ? 'evenBg' : 'none'">
             <tr>
-                <th scope="row" rowspan="2">{{ props.month }}/{{ item.day }}</th>
+                <th scope="row" rowspan="2" v-show="item.morning.isEdit===false && item.night.isEdit===false"><span>{{ item.date }}</span></th>
+                <th scope="row" rowspan="2" v-show="item.morning.isEdit===true || item.night.isEdit===true"><input type="date" v-model="item.date"></th>
+                
                 <td>早上</td>
                 <td><div class="circle" :class="item.morning.status"></div></td>
                 <td v-show="item.morning.isEdit===false"><span >{{ item.morning.sys }}</span></td>
@@ -80,6 +129,9 @@
             </tr>
         </tbody>    
     </table>
+    <div class="text-center p-3">
+        <i class="bi bi-plus-circle" @click="addData" style="font-size: 2rem; color: cornflowerblue; cursor: pointer;"></i>
+    </div>
 </template>
 
 <style lang="scss" scoped>
@@ -99,7 +151,7 @@
         }
         .bi {
             font-size: 1.6rem; 
-            color: cornflowerblue; 
+            color: $icon-blue; 
             cursor: pointer;
         }
     }
@@ -123,7 +175,7 @@
         background: $d-red;
     }
     .evenBg {
-        background: #f0f0f0;
+        background: $evenBg;
     }
 
   
