@@ -76,14 +76,14 @@
     
     //檢測狀態
     function checkStatus(period: FormProps) {
-        if(period.sys < 120 && period.dia < 80) {
-            period.status = 'green';
-        }else if((period.sys >= 120 && period.sys <= 139) || (period.dia >= 80 && period.dia <= 89)) {
-            period.status = 'yellow';
+        if(period.sys >= 160 || period.dia >= 100) {
+            period.status = 'd-red';
         }else if((period.sys >= 140 && period.sys <= 159) || (period.dia >= 90 && period.dia <= 99)) {
             period.status = 'red';
-        }else if(period.sys >= 160 || period.dia >= 100) {
-            period.status = 'd-red';
+        }else if((period.sys >= 120 && period.sys <= 139) || (period.dia >= 80 && period.dia <= 89)) {
+            period.status = 'yellow';
+        }else if(period.sys < 120 && period.dia < 80) {
+            period.status = 'green';
         }
     }
 
